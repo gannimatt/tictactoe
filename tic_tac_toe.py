@@ -26,20 +26,19 @@ def main(stdscr, player_names, num_players, grid_size, symbols):
         stdscr.refresh()
 
     def check_win():
-        # Check rows, columns, and diagonals for a win
-        lines = []
-        # Rows and columns
-        lines.extend(board)
-        lines.extend(board.T)
-        # Diagonals
-        diagonals = [board.diagonal(i) for i in range(-grid_size+1, grid_size)]
-        diagonals.extend(np.fliplr(board).diagonal(i) for i in range(-grid_size+1, grid_size))
-        lines.extend(diagonals)
-        # Check if any line has a consecutive sequence of the same symbol of required length
-        for line in lines:
-            for symbol in symbols:
-                if np.array_str(line).find(symbol * 5) != -1:
-                    return True
+        # Check rows and columns
+        for i in range(grid_size):
+            if np.all(board[i, :] == board[i, 0]) and board[i, 0] != " ":
+                return True
+            if np.all(board[:, i] == board[0, i]) and board[0, i] != " ":
+                return True
+
+        # Check diagonals
+        if np.all(np.diagonal(board) == board[0, 0]) and board[0, 0] != " ":
+            return True
+        if np.all(np.diagonal(np.fliplr(board)) == board[0, -1]) and board[0, -1] != " ":
+            return True
+
         return False
 
     while True:
